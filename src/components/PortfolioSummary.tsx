@@ -21,7 +21,7 @@ const PortfolioSummary:React.FC<PortfolioSummaryProps>=({availableStocks})=>{
         error:null
     });
     const [selectedSector,setSelectedSector]=useState<string>('All');
-    const [sortBy,setSortBy]=useState<'price'|'change'|'volume'>('price');
+    
     useEffect(()=>{
         setTimeout(()=>{
             const topThree=availableStocks.slice(0,3);

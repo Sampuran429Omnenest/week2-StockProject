@@ -1,6 +1,6 @@
 import './App.css';
 // src/App.tsx
-import React, { useState } from 'react';
+import  { useState } from 'react';
  
 // Data
 import { stocks, trades } from './data/stockData';
