@@ -197,7 +197,7 @@ function App() {
           data={calculatedPositions}
           rowKey="symbol"
           filterKey="symbol"
-          pageSize={5}
+          //pageSize={5}
           columns={positionColumns}
         />
         <h2 style={{ color: '#1E40AF' }}>My Holdings</h2>
@@ -205,7 +205,7 @@ function App() {
           data={sampleHoldings}
           rowKey="symbol"
           filterKey="symbol"
-          pageSize={3}
+          //pageSize={3}
           columns={holdingColumns}
         />
 

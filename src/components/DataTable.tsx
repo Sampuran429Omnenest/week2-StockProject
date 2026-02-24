@@ -1,6 +1,6 @@
 
 import type React from "react";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 
 // Column definition 
 export interface Column<T> {
@@ -29,14 +29,14 @@ function DataTable<T extends object>({
     onRowClick,
     emptyMessage = 'No data found.',
     filterKey,
-    pageSize,
+    // pageSize,
 }: DataTableProps<T>) {
     const [sortConfig,setSortConfig]=useState<{key:keyof T,direction:'asc'|'desc'}|null>(null);
     const [filterText,setFilterText]=useState<string>('');
-    const [page,setPage]=useState<number>(1);
-    useEffect(()=>{
-        setPage(1);
-    },[filterText])
+    // const [page,setPage]=useState<number>(1);
+    // useEffect(()=>{
+    //     setPage(1);
+    // },[filterText])
     const handleSort=(key:keyof T)=>{
         let direction:'asc'|'desc'='asc';
         if(sortConfig?.key===key && sortConfig.direction==='asc'){
@@ -67,12 +67,12 @@ function DataTable<T extends object>({
         }
     })
     if (sortedData.length === 0) return <p style={{ textAlign: 'center', padding: 20 }}>{emptyMessage}</p>;
-    const totalPages=pageSize ? Math.ceil(sortedData.length/pageSize) : 1;
-    const safePage=pageSize ? Math.min(page,totalPages) : 1; //clamping if rows are reduced
-    const paginatedData=pageSize ? sortedData.slice(
-        (safePage-1)*pageSize, 
-        safePage*pageSize
-    ) : sortedData;
+    // const totalPages=pageSize ? Math.ceil(sortedData.length/pageSize) : 1;
+    // const safePage=pageSize ? Math.min(page,totalPages) : 1; //clamping if rows are reduced
+    // const paginatedData=pageSize ? sortedData.slice(
+    //     (safePage-1)*pageSize, 
+    //     safePage*pageSize
+    // ) : sortedData;
     return ( 
         <div>
             {filterKey && (
@@ -111,7 +111,7 @@ function DataTable<T extends object>({
                 </tr>
             </thead>
             <tbody>
-                {paginatedData.map((row,ri) => (
+                {sortedData.map((row,ri) => (
                     <tr 
                         key={String(row[rowKey])}
                         onClick={() => onRowClick?.(row)}
@@ -132,14 +132,14 @@ function DataTable<T extends object>({
                 ))}
             </tbody>
         </table>
-        {pageSize && totalPages > 1 && (
+        {/* {pageSize && totalPages > 1 && (
         <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: 12,
             marginTop: 12
-        }}>
-        <button
+        }}> */}
+        {/* <button
             disabled={safePage <= 1}
             onClick={() => setPage(p => Math.max(1, p - 1))}
         >
@@ -157,7 +157,7 @@ function DataTable<T extends object>({
         Next →
         </button>
         </div>
-    )}
+    )} */}
         </div>
     );
 }
