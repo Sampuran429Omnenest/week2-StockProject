@@ -44,12 +44,12 @@ export const PortfolioPieChart: React.FC<Props> = ({ data }) => {
           ))}
         </Pie>
         <Tooltip
-            formatter={(value) =>
-            typeof value === 'number'
-            ? `${value.toFixed(2)}%`
-            : value
+          formatter={(value) =>
+          typeof value === 'number'
+          ? `${value.toFixed(2)}%`
+          : value
         }
-        />
+/>
         <Legend />
       </PieChart>
     </ResponsiveContainer>
