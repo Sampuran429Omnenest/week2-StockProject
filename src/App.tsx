@@ -251,7 +251,7 @@ function App() {
           data={calculatedPositions}
           rowKey="symbol"
           filterKey="symbol"
-          pageSize={5}
+          pageSize={3}
           columns={positionColumns}
         />
         <h2
