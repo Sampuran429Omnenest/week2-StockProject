@@ -64,57 +64,56 @@ function App() {
 
  
   // Add a new trade (receives NewTradeInput — no id/date)
-  // const handleNewTrade = (input: Omit<Trade, 'id' | 'date'>) => {
-  //   const newTrade: Trade = {
-  //     ...input,
-  //     id:   `t${Date.now()}`,
-  //     date: new Date().toISOString().split('T')[0],
-  //   };
-  //   setTradeHistory(prev => [newTrade, ...prev]);
-  // };
+  const handleNewTrade = (input: Omit<Trade, 'id' | 'date'>) => {
+    const currentPosition = calculatedPositions.find(
+      p => p.symbol === input.symbol
+    );
 
-  function handleNewTrade(input: NewTradeInput): void {
+  if (input.type === 'SELL') {
+    const ownedQty = currentPosition?.quantity ?? 0;
+
+    if (input.quantity > ownedQty) {
+      alert("Cannot sell more than you own.");
+      return;
+    }
+  }
     const newTrade: Trade = {
       ...input,
-      id:   `t${Date.now()}`,
+      id:   `t${crypto.randomUUID()}`,
       date: new Date().toISOString().split('T')[0],
     };
     setTradeHistory(function(previousTrades) {
       return [newTrade, ...previousTrades];
     });
   }
-
-  // interface GroupedTrade {
-  //   symbol: string;
-  //   quantity: number;
-  //   avgPrice: number;
-  // }
-
-  // const positionColumns: Column<Position>[] = [
-  //   { key: 'symbol', header: 'Symbol' },
-  //   { key: 'quantity', header: 'Qty' },
-  //   { 
-  //     key: 'avgPrice', 
-  //     header: 'Avg Price', 
-  //     render: (v) => `$${Number(v).toFixed(2)}` 
-  //   },
-  //   { 
-  //     key: 'ltp', 
-  //     header: 'LTP', 
-  //     render: (v) => `$${Number(v).toFixed(2)}` 
-  //   },
-  //   { 
-  //     key: 'pnl', 
-  //     header: 'P&L', 
-  //     render: (v) => {
-  //       const val = Number(v);
-  //       return <span style={{ color: val >= 0 ? 'green' : 'red',fontWeight:'bold'}}>
-  //         {val >= 0 ? '+' : ''}{val.toFixed(2)}
-  //       </span>
-  //     } 
-  //   }
-  // ]; 
-  // const holdingColumns: Column<Holdings>[] = [
+  const positionColumns: Column<Position>[] = [
+    { key: 'symbol', header: 'Symbol' ,sortable:true },
+    { key: 'quantity', header: 'Qty',sortable: true },
+    { 
+      key: 'avgPrice', 
+      header: 'Avg Price', 
+      sortable:true,
+      render: (v) => `$${Number(v).toFixed(2)}` 
+    },
+    { 
+      key: 'ltp', 
+      header: 'LTP',
+      sortable:true, 
+      render: (v) => `$${Number(v).toFixed(2)}` 
+    },
+    { 
+      key: 'pnl', 
+      header: 'P&L', 
+      sortable: true,
+      render: (v) => {
+        const val = Number(v);
+        return <span style={{ color: val >= 0 ? 'green' : 'red',fontWeight:'bold'}}>
+          {val >= 0 ? '+' : ''}{val.toFixed(2)}
+        </span>
+      } 
+    }
+  ]; 
+  const holdingColumns: Column<Holdings>[] = [
     
   //   { key: 'symbol', header: 'Symbol', sortable: true }, 
     
@@ -176,7 +175,17 @@ function App() {
 
 
   return (
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: 24, fontFamily: 'Arial, sans-serif' }}>
+    <div
+    style={{
+      maxWidth: 1200,
+      margin: '0 auto',
+      padding: '40px 24px',
+      fontFamily: 'Arial, sans-serif',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 40,   // 🔥 this adds clean vertical spacing
+    }}
+    >
       <h1 style={{ color: '#1E3A8A' }}>Stock Market Dashboard</h1>
  
       {/* ── FEATURE 1: Live Quotes — uses BOTH skeletons ── */}
@@ -197,12 +206,24 @@ function App() {
         />
       </SuspenseBoundary>
  
-      {/* ── FEATURE 2: Portfolio Summary ── */}
-      <SuspenseBoundary
-        fallback={<TableSkeleton rows={3} cols={3} title="Portfolio Summary" />}
+      {/* Typing Props */}
+      <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: 24,
+        marginTop: 20,
+      }}
       >
-        <PortfolioFeature availableStocks={stocks} />
-      </SuspenseBoundary>
+        {filteredStocks.map(stock => (
+          <StockCard
+            key={stock.id}
+            stock={stock}
+            isSelected={selectedStock?.id === stock.id}
+            onSelect={setSelectedStock}
+          />
+        ))}
+      </div>
  
       {/* ── FEATURE 3: Positions ── */}
       <SuspenseBoundary
@@ -211,30 +232,104 @@ function App() {
         <PositionsFeature positions={positions} />
       </SuspenseBoundary>
  
-      {/* ── FEATURE 4: Holdings ── */}
-      <SuspenseBoundary
-        fallback={<TableSkeleton rows={5} cols={5} title="Holdings" />}
-      >
-        <HoldingsFeature holdings={sampleHoldings} />
-      </SuspenseBoundary>
+      {/* Generic Components — Stock table */}
+      <h2
+      style={{
+        color: '#1E40AF',
+        marginBottom: 12,
+        marginTop: 20,
+      }}
+    >Live Quotes</h2>
+      <DataTable<Stock>
+        data={filteredStocks}
+        rowKey='id'
+        onRowClick={setSelectedStock}
+        filterKey="symbol"
+        pageSize={3}
+        emptyMessage='No stocks match your search.'
+        columns={[
+          { key: 'symbol', header: 'Symbol', sortable:true },
+          { key: 'name',   header: 'Company', sortable:true },
+          { key: 'price',  header: 'Price', sortable:true,
+            render: v => `$${Number(v).toFixed(2)}` },
+          { key: 'changePct', header: 'Change %', sortable:true,
+            render: v => {
+              const n = Number(v);
+              return <span style={{ color: n >= 0 ? 'green' : 'red' }}>
+                {n >= 0 ? '+' : ''}{n.toFixed(2)}%
+              </span>;
+            }},
+          { key: 'volume', header: 'Volume', sortable:true,
+            render: v => Number(v).toLocaleString() },
+        ]}
+      />
  
-      {/* ── FEATURE 5: Trade History + Form — uses TWO skeletons ── */}
-      <SuspenseBoundary
-        fallback={
-          <>
-            <TableSkeleton rows={3} cols={5} title="Trade History" />
-            <FormSkeleton />
-          </>
-        }
-      >
-        <TradeFeature
-          tradeHistory={tradeHistory}
-          stocks={stocks}
-          selectedStock={selectedStock}
-          onSubmitTrade={handleNewTrade}
+      {/* Generic Components — Trade table */}
+      <h2
+      style={{
+        color: '#1E40AF',
+        marginBottom: 12,
+        marginTop: 20,
+      }}
+    >Trade History</h2>
+      <DataTable<Trade>
+        data={tradeHistory}
+        rowKey='id'
+        filterKey="symbol"
+        pageSize={3}
+        columns={[
+          { key: 'symbol',   header: 'Symbol' , sortable:true },
+          { key: 'type',     header: 'Type', sortable : true,
+            render: v => <strong style={{ color: v === 'BUY' ? 'green' : 'red' }}>
+              {String(v)}</strong> },
+          { key: 'quantity', header: 'Qty' , sortable:true },
+          { key: 'price',    header: 'Price', sortable:true,
+            render: v => `$${Number(v).toFixed(2)}` },
+          { key: 'date',     header: 'Date' , sortable : true },
+        ]}
+      />
+      <h2
+      style={{
+        color: '#1E40AF',
+        marginBottom: 12,
+        marginTop: 20,
+      }}
+      >Your Positions</h2>
+        <DataTable<Position>
+          data={calculatedPositions}
+          rowKey="symbol"
+          filterKey="symbol"
+          pageSize={3}
+          columns={positionColumns}
         />
-      </SuspenseBoundary>
- 
+        <h2
+      style={{
+        color: '#1E40AF',
+        marginBottom: 12,
+        marginTop: 20,
+      }}
+      >My Holdings</h2>
+          <DataTable<Holdings>
+          data={sampleHoldings}
+          rowKey="symbol"
+          filterKey="symbol"
+          pageSize={3}
+          columns={holdingColumns}
+        />
+
+      {/* Utility Types */}
+      <h2
+      style={{
+        color: '#1E40AF',
+        marginBottom: 12,
+        marginTop: 20,
+      }}
+      >New Trade</h2>
+      <TradeForm
+        stocks={stocks}
+        onSubmitTrade={handleNewTrade}
+        initialValues={selectedStock ?? {}}
+      />
     </div>
 
   );
