@@ -40,3 +40,7 @@ export interface Holdings{
     CurrentValue:number;
     TotalReturn:number;
 }
+export interface PieData {
+  name: string
+  value: number
+}

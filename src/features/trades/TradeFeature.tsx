@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { Trade, Stock } from '../../types/stock.types';
 import DataTable        from '../../components/DataTable';
