@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Holdings } from '../../types/stock.types';
 import DataTable   from '../../components/DataTable';
+import { PortfolioPieChart } from '../../components/charts/PortfolioPieChart';
  
 interface HoldingsFeatureProps {
   holdings: Holdings[];
@@ -18,8 +19,16 @@ function pnlCell(value: unknown, suffix: string = ''): React.ReactNode {
     </span>
   );
 }
- 
 const HoldingsFeature: React.FC<HoldingsFeatureProps> = ({ holdings }) => {
+  const totalValue = holdings.reduce(
+    (acc, h) => acc + h.CurrentValue,
+    0
+  );
+
+  const pieData = holdings.map(h => ({
+    name: h.symbol,
+    value: totalValue > 0 ? (h.CurrentValue / totalValue) * 100 : 0
+  }));
   return (
     <>
       <h2 style={{ color: '#1E40AF' }}>Holdings</h2>
@@ -42,6 +51,7 @@ const HoldingsFeature: React.FC<HoldingsFeatureProps> = ({ holdings }) => {
           },
         ]}
       />
+      <PortfolioPieChart data={pieData} />
     </>
   );
 };
