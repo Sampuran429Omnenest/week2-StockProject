@@ -1,13 +1,22 @@
-import  { lazy, useState } from 'react';
-
-
+import { lazy, useState } from 'react';
 import { stocks, trades, positions, sampleHoldings } from './data/stockData';
-import type { Stock, Trade } from './types/stock.types';
  
+import type { Stock, Trade } from './types/stock.types';
+import MarketTicker from './components/ticker/MarketTicker';
+// ── Boundary wrapper (EAGER import — NOT lazy) ───────────────────────
 import SuspenseBoundary from './boundaries/SuspenseBoundary';
+//
+// WHY NOT lazy? SuspenseBoundary SHOWS the skeleton while things load.
+// It needs to be ready instantly.
+ 
+// ── Skeleton components (EAGER imports — NOT lazy) ───────────────────
 import TableSkeleton    from './skeletons/TableSkeleton';
 import CardGridSkeleton from './skeletons/CardGridSkeleton';
 import FormSkeleton     from './skeletons/FormSkeleton';
+// WHY NOT lazy? These ARE the fallback UI.
+// They must exist BEFORE the real components arrive.
+
+
  
 const LiveQuotesFeature = lazy(function() {
   return import('./features/quotes/LiveQuotesFeature');
@@ -29,8 +38,6 @@ const TradeFeature = lazy(function() {
   return import('./features/trades/TradeFeature');
 });
  
-
-
 type NewTradeInput = Omit<Trade, 'id' | 'date'>;
  
 function App() {
@@ -42,19 +49,19 @@ function App() {
   const [tradeHistory,   setTradeHistory]   = useState<Trade[]>(trades);
  
   // ── Filtered stocks (UNCHANGED) ─────────────────────────────────────
-  const filteredStocks = stocks.filter(function(stock) {
-    const queryLower     = searchQuery.toLowerCase();
-    const symbolMatches  = stock.symbol.toLowerCase().includes(queryLower);
-    const nameMatches    = stock.name.toLowerCase().includes(queryLower);
-    const searchMatches  = symbolMatches || nameMatches;
-    const noFilter       = sectorFilter === '';
-    const sectorMatches  = noFilter || stock.sector === sectorFilter;
+  const  filteredStocks = stocks.filter(function(stock) {
+    const  queryLower     = searchQuery.toLowerCase();
+    const  symbolMatches  = stock.symbol.toLowerCase().includes(queryLower);
+    const  nameMatches    = stock.name.toLowerCase().includes(queryLower);
+    const  searchMatches  = symbolMatches || nameMatches;
+    const  noFilter       = sectorFilter === '';
+    const  sectorMatches  = noFilter || stock.sector === sectorFilter;
     return searchMatches && sectorMatches;
   });
  
   // ── handleNewTrade (UNCHANGED) ───────────────────────────────────────
   function handleNewTrade(input: NewTradeInput): void {
-    const newTrade: Trade = {
+    const  newTrade: Trade = {
       ...input,
       id:   `t${Date.now()}`,
       date: new Date().toISOString().split('T')[0],
@@ -64,10 +71,12 @@ function App() {
     });
   }
 
-
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: 24, fontFamily: 'Arial, sans-serif' }}>
       <h1 style={{ color: '#1E3A8A' }}>Stock Market Dashboard</h1>
+
+
+      <MarketTicker stocks={stocks} />
  
       {/* ── FEATURE 1: Live Quotes — uses BOTH skeletons ── */}
       <SuspenseBoundary

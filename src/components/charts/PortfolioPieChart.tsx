@@ -3,40 +3,49 @@ import {
   Pie,
   Tooltip,
   ResponsiveContainer,
-  Legend
-} from 'recharts'
+  Legend,
+  Cell
+} from 'recharts';
+
+type PieData = {
+  name: string;
+  value: number;
+};
 
 type Props = {
-  data: { name: string; value: number }[]
-}
+  data: PieData[];
+};
 
 const COLORS = [
-  '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'
+  '#2563EB',
+  '#16A34A',
+  '#F59E0B',
+  '#DC2626',
+  '#7C3AED',
+  '#0891B2'
 ];
 
-// Helper function to format the numbers to 2 decimal places with a % sign
-const formatPercent = (value: number) => `${value.toFixed(2)}%`;
-
-export const PortfolioPieChart = ({ data }: Props) => {
-  const pieData = data.map((entry, index) => ({
-    ...entry,
-    fill: COLORS[index % COLORS.length]
-  }));
-
+export const PortfolioPieChart: React.FC<Props> = ({ data }) => {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>
         <Pie
-          data={pieData}
+          data={data}
           dataKey="value"
           nameKey="name"
           outerRadius={100}
-          label={({ value }) => formatPercent(value)} // Formats the text on the chart
-        />
-        {/* Formats the text inside the hover box */}
-        <Tooltip formatter={(value: number) => formatPercent(value)} />
+          label={(entry) => `${entry.value.toFixed(1)}%`}
+        >
+          {data.map((_, index) => (
+            <Cell
+              key={index}
+              fill={COLORS[index % COLORS.length]}
+            />
+          ))}
+        </Pie>
+        <Tooltip formatter={(value: number) => `${value.toFixed(2)}%`} />
         <Legend />
       </PieChart>
     </ResponsiveContainer>
-  )
-}
+  );
+};

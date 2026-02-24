@@ -1,6 +1,7 @@
 import type { Holdings, Position, Stock,Trade } from "../types/stock.types";
  
 export const stocks: Stock[] = [
+  // --- Original 10 ---
   { id: '1', symbol: 'AAPL', name: 'Apple Inc.',
     price: 189.30, change: 2.15, changePct: 1.15,
     volume: 54_200_000, marketCap: 2_950_000_000_000, sector: 'Technology' },
@@ -19,23 +20,66 @@ export const stocks: Stock[] = [
   { id: '6', symbol: 'NVDA', name: 'NVIDIA Corp.',
     price: 190.04, change: 3.15, changePct: 1.69,
     volume: 41_200_000, marketCap: 1_200_000_000_000, sector: 'Technology' },
-
   { id: '7', symbol: 'META', name: 'Meta Platforms',
     price: 652.68, change: -5.40, changePct: -0.82,
     volume: 12_500_000, marketCap: 850_000_000_000, sector: 'Technology' },
-
   { id: '8', symbol: 'AMZN', name: 'Amazon.com Inc.',
     price: 208.88, change: 2.33, changePct: 1.13,
     volume: 25_700_000, marketCap: 1_600_000_000_000, sector: 'Technology' },
-
   { id: '9', symbol: 'NFLX', name: 'Netflix Inc.',  
     price: 488.12, change: -3.80, changePct: -0.77,
     volume: 6_300_000, marketCap: 220_000_000_000, sector: 'Technology' },
-
   { id: '10', symbol: 'AMD', name: 'Advanced Micro Devices',
     price: 121.45, change: 1.25, changePct: 1.04,
     volume: 30_400_000, marketCap: 195_000_000_000, sector: 'Technology' },
-  ];
+
+  // --- 15 New Additions ---
+  { id: '11', symbol: 'V', name: 'Visa Inc.',
+    price: 265.40, change: 1.20, changePct: 0.45,
+    volume: 5_100_000, marketCap: 540_000_000_000, sector: 'Finance' },
+  { id: '12', symbol: 'JNJ', name: 'Johnson & Johnson',
+    price: 156.75, change: -0.85, changePct: -0.54,
+    volume: 7_200_000, marketCap: 380_000_000_000, sector: 'Healthcare' },
+  { id: '13', symbol: 'WMT', name: 'Walmart Inc.',
+    price: 165.20, change: 0.90, changePct: 0.55,
+    volume: 12_400_000, marketCap: 445_000_000_000, sector: 'Retail' },
+  { id: '14', symbol: 'PG', name: 'Procter & Gamble',
+    price: 148.90, change: 0.30, changePct: 0.20,
+    volume: 6_800_000, marketCap: 350_000_000_000, sector: 'Consumer Goods' },
+  { id: '15', symbol: 'XOM', name: 'Exxon Mobil Corp.',
+    price: 102.45, change: -1.15, changePct: -1.11,
+    volume: 15_300_000, marketCap: 410_000_000_000, sector: 'Energy' },
+  { id: '16', symbol: 'UNH', name: 'UnitedHealth Group',
+    price: 540.10, change: 5.60, changePct: 1.05,
+    volume: 3_100_000, marketCap: 500_000_000_000, sector: 'Healthcare' },
+  { id: '17', symbol: 'HD', name: 'The Home Depot',
+    price: 330.50, change: -2.40, changePct: -0.72,
+    volume: 4_500_000, marketCap: 335_000_000_000, sector: 'Retail' },
+  { id: '18', symbol: 'BAC', name: 'Bank of America',
+    price: 34.25, change: 0.45, changePct: 1.33,
+    volume: 38_900_000, marketCap: 270_000_000_000, sector: 'Finance' },
+  { id: '19', symbol: 'MA', name: 'Mastercard Inc.',
+    price: 415.80, change: 3.10, changePct: 0.75,
+    volume: 2_900_000, marketCap: 390_000_000_000, sector: 'Finance' },
+  { id: '20', symbol: 'CVX', name: 'Chevron Corp.',
+    price: 145.60, change: -0.90, changePct: -0.61,
+    volume: 8_700_000, marketCap: 275_000_000_000, sector: 'Energy' },
+  { id: '21', symbol: 'KO', name: 'Coca-Cola Co.',
+    price: 59.80, change: 0.15, changePct: 0.25,
+    volume: 11_200_000, marketCap: 258_000_000_000, sector: 'Consumer Goods' },
+  { id: '22', symbol: 'PEP', name: 'PepsiCo Inc.',
+    price: 168.45, change: -0.45, changePct: -0.27,
+    volume: 4_800_000, marketCap: 230_000_000_000, sector: 'Consumer Goods' },
+  { id: '23', symbol: 'COST', name: 'Costco Wholesale',
+    price: 680.90, change: 4.50, changePct: 0.67,
+    volume: 1_800_000, marketCap: 300_000_000_000, sector: 'Retail' },
+  { id: '24', symbol: 'DIS', name: 'Walt Disney Co.',
+    price: 92.30, change: -1.20, changePct: -1.28,
+    volume: 14_600_000, marketCap: 168_000_000_000, sector: 'Entertainment' },
+  { id: '25', symbol: 'NKE', name: 'Nike Inc.',
+    price: 105.60, change: 0.80, changePct: 0.76,
+    volume: 7_500_000, marketCap: 160_000_000_000, sector: 'Consumer Goods' }
+];
  
 export const trades: Trade[] = [
   { id: 't1', stockId: '1', symbol: 'AAPL', type: 'BUY',

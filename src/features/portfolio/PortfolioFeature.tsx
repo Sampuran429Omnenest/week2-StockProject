@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { Stock }         from '../../types/stock.types';
 import PortfolioSummary  from '../../components/PortfolioSummary';
