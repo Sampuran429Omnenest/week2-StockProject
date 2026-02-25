@@ -9,7 +9,7 @@ interface PositionStore{
     toggleCompare:(pos:Position)=>void;
     clearCompare:()=>void;
 }
-export const usePositionStore=create<PositionStore>((set,get)=>({
+export const usePositionStore=create<PositionStore>((set)=>({
     positions:positions,
     compareList:[],
     toggleCompare: function (position) {
